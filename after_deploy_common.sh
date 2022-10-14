@@ -16,7 +16,6 @@ echo "<------- SUCCESS READING PARAMETERS ------->"
 
 echo ${GITHUB_REPO_NAME}
 echo ${VERSION}
-exit 1
 
 echo "<------- START CHECKING ENVIRONMENT ------->"
 if [ -z "${GITHUB_TOKEN}" ]; then
@@ -43,6 +42,7 @@ if [ -z "${VERSION}" ]; then
 fi
 
 echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
+exit 1
 
 GITHUB_ACCOUNT_NAME="Kameleoon"
 GITHUB_REPO_URL="https://${GITHUB_TOKEN}@github.com/${GITHUB_ACCOUNT_NAME}/${GITHUB_REPO_NAME}.git"

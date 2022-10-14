@@ -1,4 +1,30 @@
 #!/bin/bash
+
+echo "<------- START READING PARAMETERS ------->"
+errorParameters()
+{
+   echo ""
+   echo "Usage: $0 -reponame GITHUB_REPO_NAME -version VERSION"
+   echo -e "\t-reponame Github Repository Name"
+   echo -e "\t-version Version number of SDK"
+   echo "<------- FAILED READING PARAMETERS ------->"
+   exit 1 # Exit script after printing help
+}
+
+while getopts "reponame:version:" opt
+do
+   case "$opt" in
+      reponame ) GITHUB_REPO_NAME="$OPTARG" ;;
+      version ) VERSION="$OPTARG" ;;
+      ? ) errorParameters ;; # Print helpFunction in case parameter is non-existent
+   esac
+done
+echo "<------- SUCCESS READING PARAMETERS ------->"
+
+echo ${GITHUB_REPO_NAME}
+echo ${VERSION}
+exit 1
+
 echo "<------- START CHECKING ENVIRONMENT ------->"
 if [ -z "${GITHUB_TOKEN}" ]; then
     echo "Missing GITHUB_TOKEN environment variable"
@@ -10,16 +36,22 @@ if [ -z "${GITLAB_ACCESS_TOKEN}" ]; then
     echo "<------- FAILED CHECKING ENVIRONMENT ------->"
     exit 1
 fi
+if [ -z "${GITHUB_REPO_NAME}" ]; then
+    echo "Missing GITHUB_REPO_NAME environment variable"
+    echo "<------- FAILED CHECKING ENVIRONMENT ------->"
+    exit 1
+fi
+if [ -z "${VERSION}" ]; then
+    echo "Missing VERSION environment variable"
+    echo "<------- FAILED CHECKING ENVIRONMENT ------->"
+    exit 1
+fi
+
 echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
 
-GITHUB_REPO_NAME="client-go"
 GITHUB_ACCOUNT_NAME="Kameleoon"
 GITHUB_REPO_URL="https://${GITHUB_TOKEN}@github.com/${GITHUB_ACCOUNT_NAME}/${GITHUB_REPO_NAME}.git"
 EMAIL_SDK="sdk@kameleoon.com"
-
-echo "<------- START FETCHING VERSION ------->"
-VERSION=$(cat client.go | grep "const SDKVersion =" | sed 's/[^0-9.]*\([0-9.]*\).*/\1/') 
-echo "<------- SUCCESS FETCHING VERSION ------->"
 
 echo "<------- START CLONE REPO ------->"
 # Init github repository inside deploy folder

@@ -11,7 +11,9 @@ errorParameters()
    exit 1 # Exit script after printing help
 }
 GITHUB_REPO_NAME=$1
-VERSION=$2 
+SDK_NAME=$2
+VERSION=$3
+PATH_TO_FILE=$4
 echo "<------- SUCCESS READING PARAMETERS ------->"
 
 echo ${GITHUB_REPO_NAME}
@@ -40,6 +42,23 @@ if [ -z "${VERSION}" ]; then
     errorParameters()
     exit 1
 fi
+if [ -z "${SDK_NAME}" ]; then
+    echo "Missing SDK_NAME environment variable"
+    echo "<------- FAILED CHECKING ENVIRONMENT ------->"
+    errorParameters()
+    exit 1
+fi
+if [ -z "${PATH_TO_FILE}" ]; then
+    echo "Missing PATH_TO_FILE environment variable"
+    echo "<------- FAILED CHECKING ENVIRONMENT ------->"
+    errorParameters()
+    exit 1
+fi
+
+echo $GITHUB_REPO_NAME
+echo $SDK_NAME
+echo $VERSION
+echo $PATH_TO_FILE
 
 echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
 exit 1
@@ -75,7 +94,7 @@ sed -i "s/## ${VERSION}/## ${VERSION} - ${CURRENT_DATE}/" CHANGELOG.md
 rm new-changes.md
 
 git add *
-git commit -m "GO SDK ${VERSION}"
+git commit -m "${SDK_NAME} ${VERSION}"
 git push --force
 if [ $? -ne 0 ]; then
     echo "<------- FAILED UPDATE CHANGELOG ------->"
@@ -90,7 +109,6 @@ echo "<------- SUCCESS UPDATE CHANGELOG ------->"
 
 GITLAB_DEVELOPMENT_FOLDER="developers"
 GITLAB_DEVELOPMENT_REPO_URL="http://oauth2:${GITLAB_ACCESS_TOKEN}@development.kameleoon.net/kameleoon-documentation/${GITLAB_DEVELOPMENT_FOLDER}.git"
-PATH_TO_FILE="source/includes/_go_sdk.md"
 
 echo "<------- START CLONE DOCUMENT REPO ------->"
 rm -rf "${GITLAB_DEVELOPMENT_REPO_URL}"
@@ -106,7 +124,7 @@ echo "<------- START UPDATE DOCUMENT VERSION ------->"
 cd ${GITLAB_DEVELOPMENT_FOLDER}
 sed -i "s/SDK: [^0-9.]*\([0-9.]*\)/SDK: ${VERSION}/g" ${PATH_TO_FILE}
 git add *
-git commit -m "Automatic Update: GO SDK ${VERSION}"
+git commit -m "Automatic Update: ${SDK_NAME} ${VERSION}"
 git push
 if [ $? -ne 0 ]; then
     echo "<------- FAILED UPDATE DOCUMENT VERSION ------->"

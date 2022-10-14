@@ -59,7 +59,6 @@ echo $GITHUB_REPO_NAME
 echo $SDK_NAME
 echo $VERSION
 echo $PATH_TO_FILE
-
 echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
 
 GITHUB_ACCOUNT_NAME="Kameleoon"

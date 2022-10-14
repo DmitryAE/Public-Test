@@ -61,7 +61,6 @@ echo $VERSION
 echo $PATH_TO_FILE
 
 echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
-exit 1
 
 GITHUB_ACCOUNT_NAME="Kameleoon"
 GITHUB_REPO_URL="https://${GITHUB_TOKEN}@github.com/${GITHUB_ACCOUNT_NAME}/${GITHUB_REPO_NAME}.git"

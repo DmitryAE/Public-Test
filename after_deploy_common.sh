@@ -4,21 +4,14 @@ echo "<------- START READING PARAMETERS ------->"
 errorParameters()
 {
    echo ""
-   echo "Usage: $0 -reponame GITHUB_REPO_NAME -version VERSION"
+   echo "Usage: $0 GITHUB_REPO_NAME VERSION"
    echo -e "\t-reponame Github Repository Name"
    echo -e "\t-version Version number of SDK"
    echo "<------- FAILED READING PARAMETERS ------->"
    exit 1 # Exit script after printing help
 }
-
-while getopts "reponame:version:" opt
-do
-   case "$opt" in
-      reponame ) GITHUB_REPO_NAME="$OPTARG" ;;
-      version ) VERSION="$OPTARG" ;;
-      ? ) errorParameters ;; # Print helpFunction in case parameter is non-existent
-   esac
-done
+GITHUB_REPO_NAME=$1
+VERSION=$2 
 echo "<------- SUCCESS READING PARAMETERS ------->"
 
 echo ${GITHUB_REPO_NAME}
@@ -39,11 +32,13 @@ fi
 if [ -z "${GITHUB_REPO_NAME}" ]; then
     echo "Missing GITHUB_REPO_NAME environment variable"
     echo "<------- FAILED CHECKING ENVIRONMENT ------->"
+    errorParameters()
     exit 1
 fi
 if [ -z "${VERSION}" ]; then
     echo "Missing VERSION environment variable"
     echo "<------- FAILED CHECKING ENVIRONMENT ------->"
+    errorParameters()
     exit 1
 fi
 

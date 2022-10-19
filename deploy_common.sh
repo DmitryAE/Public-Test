@@ -72,8 +72,11 @@ echo "<------- START COMMIT CODE ------->"
 ls -l
 COMMIT_CODE_SCRIPT="scripts/commit_code.sh"
 if [ -f "$COMMIT_CODE_SCRIPT" ]; then
+    mv CHANGELOG.md CHANGELOG-GITHUB.md
     echo "Run a script to commit open source code to repo"
     sh "${COMMIT_CODE_SCRIPT}" ${GITHUB_REPO_NAME}
+    mv CHANGELOG-GITHUB.md CHANGELOG.md
+    rm CHANGELOG-GITHUB.md
 else 
     echo "No open source code was commited"
 fi
@@ -86,7 +89,7 @@ cd ${GITHUB_REPO_NAME}
 CURRENT_EMAIL=$(git config --global user.email)
 git config --global user.email "${EMAIL_SDK}"
 
-# Commit and push updated files
+#Update changes in CHANGELOG
 sed -n -e "/## ${VERSION}/,/##/ p" ../CHANGELOG.md | sed -e '$ d' > new-changes.md
 sed -i '/`internal`/d' new-changes.md
 sed -i '3 r new-changes.md' CHANGELOG.md
@@ -94,6 +97,7 @@ CURRENT_DATE=$(date +"%Y-%m-%d")
 sed -i "s/## ${VERSION}/## ${VERSION} - ${CURRENT_DATE}/" CHANGELOG.md
 rm new-changes.md
 
+# Commit and push updated files
 git add *
 git commit -m "${SDK_NAME} ${VERSION}"
 git push --force

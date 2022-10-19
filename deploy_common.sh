@@ -69,7 +69,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "<------- START COMMIT CODE ------->"
-ls -l
 COMMIT_CODE_SCRIPT="scripts/commit_code.sh"
 if [ -f "$COMMIT_CODE_SCRIPT" ]; then
     mv CHANGELOG.md CHANGELOG-GITHUB.md
@@ -84,10 +83,6 @@ echo "<------- SUCCESS COMMIT CODE ------->"
 echo "<------- START UPDATE CHANGELOG ------->"
 cd ${GITHUB_REPO_NAME}
 
-# Git config to "${EMAIL_SDK}"
-CURRENT_EMAIL=$(git config --global user.email)
-git config --global user.email "${EMAIL_SDK}"
-
 #Update changes in CHANGELOG
 sed -n -e "/## ${VERSION}/,/##/ p" ../CHANGELOG.md | sed -e '$ d' > new-changes.md
 sed -i '/`internal`/d' new-changes.md
@@ -95,17 +90,25 @@ sed -i '3 r new-changes.md' CHANGELOG.md
 CURRENT_DATE=$(date +"%Y-%m-%d")
 sed -i "s/## ${VERSION}/## ${VERSION} - ${CURRENT_DATE}/" CHANGELOG.md
 rm new-changes.md
+echo "<------- SUCCESS UPDATE CHANGELOG ------->"
 
+echo "<------- START DELETE SERVICE FILES ------->"
 # Delete service files
 rm CHANGELOG-GITHUB.md
 rm deploy_common.sh
+echo "<------- SUCCESS DELETE SERVICE FILES ------->"
+
+echo "<------- START PUSH TO GITHUB ------->"
+# Git config to "${EMAIL_SDK}"
+CURRENT_EMAIL=$(git config --global user.email)
+git config --global user.email "${EMAIL_SDK}"
 
 # Commit and push updated files
 git add *
 git commit -m "${SDK_NAME} ${VERSION}"
 git push --force
 if [ $? -ne 0 ]; then
-    echo "<------- FAILED UPDATE CHANGELOG ------->"
+    echo "<------- FAILED PUSH TO GITHUB ------->"
     exit 1
 fi
 
@@ -116,8 +119,7 @@ git push origin "v${VERSION}"
 # Remove deploy folder
 cd ../
 rm -rf "${GITHUB_REPO_NAME}"
-
-echo "<------- SUCCESS UPDATE CHANGELOG ------->"
+echo "<------- SUCCESS PUSH TO GITHUB ------->"
 
 GITLAB_DEVELOPMENT_FOLDER="developers"
 GITLAB_DEVELOPMENT_REPO_URL="http://oauth2:${GITLAB_ACCESS_TOKEN}@development.kameleoon.net/kameleoon-documentation/${GITLAB_DEVELOPMENT_FOLDER}.git"

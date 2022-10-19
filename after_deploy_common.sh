@@ -75,10 +75,10 @@ cd ${GITHUB_REPO_NAME}
 CURRENT_EMAIL=$(git config --global user.email)
 git config --global user.email "${EMAIL_SDK}"
 
-COMMIT_CODE_SCRIPT=commit_code.sh
+COMMIT_CODE_SCRIPT=../scripts/commit_code.sh
 if [ -f "$COMMIT_CODE_SCRIPT" ]; then
     echo "Run a script to commit open source code to repo"
-    sh commit_code.sh
+    sh COMMIT_CODE_SCRIPT
 else 
     echo "No open source code was commited"
 fi

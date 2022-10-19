@@ -76,7 +76,6 @@ if [ -f "$COMMIT_CODE_SCRIPT" ]; then
     echo "Run a script to commit open source code to repo"
     sh "${COMMIT_CODE_SCRIPT}" ${GITHUB_REPO_NAME}
     mv CHANGELOG-GITHUB.md CHANGELOG.md
-    rm CHANGELOG-GITHUB.md
 else 
     echo "No open source code was commited"
 fi
@@ -96,6 +95,10 @@ sed -i '3 r new-changes.md' CHANGELOG.md
 CURRENT_DATE=$(date +"%Y-%m-%d")
 sed -i "s/## ${VERSION}/## ${VERSION} - ${CURRENT_DATE}/" CHANGELOG.md
 rm new-changes.md
+
+# Delete service files
+rm CHANGELOG-GITHUB.md
+rm deploy_common.sh
 
 # Commit and push updated files
 git add *

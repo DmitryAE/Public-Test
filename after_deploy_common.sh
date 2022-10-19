@@ -79,6 +79,8 @@ COMMIT_CODE_SCRIPT=commit_code.sh
 if [ -f "$COMMIT_CODE_SCRIPT" ]; then
     echo "Run a script to commit open source code to repo"
     sh commit_code.sh
+else 
+    echo "No open source code was commited"
 fi
 
 # Commit and push updated files

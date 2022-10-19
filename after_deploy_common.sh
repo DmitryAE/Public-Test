@@ -68,20 +68,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "<------- START UPDATE CHANGELOG ------->"
-cd ${GITHUB_REPO_NAME}
-
-# Git config to "${EMAIL_SDK}"
-CURRENT_EMAIL=$(git config --global user.email)
-git config --global user.email "${EMAIL_SDK}"
-
-COMMIT_CODE_SCRIPT=../scripts/commit_code.sh
+echo "<------- START COMMIT CODE ------->"
+COMMIT_CODE_SCRIPT=scripts/commit_code.sh
 if [ -f "$COMMIT_CODE_SCRIPT" ]; then
     echo "Run a script to commit open source code to repo"
     sh COMMIT_CODE_SCRIPT
 else 
     echo "No open source code was commited"
 fi
+echo "<------- SUCCESS COMMIT CODE ------->"
+
+echo "<------- START UPDATE CHANGELOG ------->"
+cd ${GITHUB_REPO_NAME}
+
+# Git config to "${EMAIL_SDK}"
+CURRENT_EMAIL=$(git config --global user.email)
+git config --global user.email "${EMAIL_SDK}"
 
 # Commit and push updated files
 sed -n -e "/## ${VERSION}/,/##/ p" ../CHANGELOG.md | sed -e '$ d' > new-changes.md

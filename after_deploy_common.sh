@@ -16,9 +16,6 @@ VERSION=$3
 PATH_TO_FILE=$4
 echo "<------- SUCCESS READING PARAMETERS ------->"
 
-echo ${GITHUB_REPO_NAME}
-echo ${VERSION}
-
 echo "<------- START CHECKING ENVIRONMENT ------->"
 if [ -z "${GITHUB_TOKEN}" ]; then
     echo "Missing GITHUB_TOKEN environment variable"
@@ -54,11 +51,6 @@ if [ -z "${PATH_TO_FILE}" ]; then
     errorParameters()
     exit 1
 fi
-
-echo $GITHUB_REPO_NAME
-echo $SDK_NAME
-echo $VERSION
-echo $PATH_TO_FILE
 echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
 
 GITHUB_ACCOUNT_NAME="Kameleoon"
@@ -83,6 +75,12 @@ cd ${GITHUB_REPO_NAME}
 CURRENT_EMAIL=$(git config --global user.email)
 git config --global user.email "${EMAIL_SDK}"
 
+COMMIT_CODE_SCRIPT=commit_code.sh
+if [ -f "$COMMIT_CODE_SCRIPT" ]; then
+    echo "Run a script to commit open source code to repo"
+    sh commit_code.sh
+fi
+
 # Commit and push updated files
 sed -n -e "/## ${VERSION}/,/##/ p" ../CHANGELOG.md | sed -e '$ d' > new-changes.md
 sed -i '/`internal`/d' new-changes.md
@@ -98,6 +96,10 @@ if [ $? -ne 0 ]; then
     echo "<------- FAILED UPDATE CHANGELOG ------->"
     exit 1
 fi
+
+# Create tag and push
+git tag "v${VERSION}" main
+git push origin "v${VERSION}"
 
 # Remove deploy folder
 cd ../

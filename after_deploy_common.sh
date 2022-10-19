@@ -73,7 +73,7 @@ ls -l
 COMMIT_CODE_SCRIPT="scripts/commit_code.sh"
 if [ -f "$COMMIT_CODE_SCRIPT" ]; then
     echo "Run a script to commit open source code to repo"
-    sh COMMIT_CODE_SCRIPT
+    sh "${COMMIT_CODE_SCRIPT}"
 else 
     echo "No open source code was commited"
 fi

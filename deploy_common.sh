@@ -56,6 +56,7 @@ echo "<------- SUCCESS CHECKING ENVIRONMENT ------->"
 GITHUB_ACCOUNT_NAME="Kameleoon"
 GITHUB_REPO_URL="https://${GITHUB_TOKEN}@github.com/${GITHUB_ACCOUNT_NAME}/${GITHUB_REPO_NAME}.git"
 EMAIL_SDK="sdk@kameleoon.com"
+DESC_NEW_VERSION=$(sed -n -e "/## $VERSION/,/##/ p" CHANGELOG.md | sed -e '1d;$d' | sed -r '/^\s*$/d' | sed 's/* /- /g' | awk '{ printf "%s\\n",$0 }' | sed 's/"/\\"/g')
 
 echo "<------- START CLONE REPO ------->"
 # Init github repository inside deploy folder
@@ -121,10 +122,28 @@ cd ../
 rm -rf "${GITHUB_REPO_NAME}"
 echo "<------- SUCCESS PUSH TO GITHUB ------->"
 
+echo "<------- START MAKE A NEW RELEASE ON GITHUB ------->"
+GH_REPO="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO"
+GH_TAGS="$GH_REPO/releases/tags/$VERSION"
+AUTH="Authorization: token $GITHUB_TOKEN"
+
+# Validate token.
+curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
+
+# Create a release
+RELEASE_URL="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO/releases"
+curl -sH "$AUTH" --data "{\"tag_name\": \"$VERSION\", \"name\": \"${SDK_NAME} ${VERSION}\", \"body\": \"$DESC_NEW_VERSION\"}" $RELEASE_URL
+echo $?
+
+# Read asset tags.
+response=$(curl -sH "$AUTH" $GH_TAGS)
+echo $response
+echo "<------- SUCCESS MAKE A NEW RELEASE ON GITHUB ------->"
+
+echo "<------- START CLONE DOCUMENT REPO ------->"
 GITLAB_DEVELOPMENT_FOLDER="developers"
 GITLAB_DEVELOPMENT_REPO_URL="http://oauth2:${GITLAB_ACCESS_TOKEN}@development.kameleoon.net/kameleoon-documentation/${GITLAB_DEVELOPMENT_FOLDER}.git"
 
-echo "<------- START CLONE DOCUMENT REPO ------->"
 rm -rf "${GITLAB_DEVELOPMENT_REPO_URL}"
 
 git clone "${GITLAB_DEVELOPMENT_REPO_URL}"

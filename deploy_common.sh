@@ -131,7 +131,7 @@ AUTH="Authorization: token $GITHUB_TOKEN"
 curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
 
 # Create a release
-RELEASE_URL="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO/releases"
+RELEASE_URL="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO_NAME/releases"
 echo $VERSION
 echo $SDK_NAME
 echo $DESC_NEW_VERSION

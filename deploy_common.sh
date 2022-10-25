@@ -123,7 +123,7 @@ rm -rf "${GITHUB_REPO_NAME}"
 echo "<------- SUCCESS PUSH TO GITHUB ------->"
 
 echo "<------- START MAKE A NEW RELEASE ON GITHUB ------->"
-GH_REPO="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO"
+GH_REPO="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO_NAME"
 GH_TAGS="$GH_REPO/releases/tags/$VERSION"
 AUTH="Authorization: token $GITHUB_TOKEN"
 

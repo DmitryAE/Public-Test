@@ -15,6 +15,16 @@ SDK_NAME=$2
 VERSION=$3
 PATH_TO_FILE=$4
 echo "<------- SUCCESS READING PARAMETERS ------->"
+echo "<------- START UPDATE ARTIFACTORY REPO ------->"
+UPDATE_ARTIFACTORY="scripts/update_artifactory.sh"
+if [ -f "$UPDATE_ARTIFACTORY" ]; then
+    echo "Run a script to update artifactory repo"
+    sh "${UPDATE_ARTIFACTORY}"
+else 
+    echo "Artifacrory repo wasn't updated"
+fi
+echo "<------- SUCCESS UPDATE ARTIFACTORY REPO ------->"
+exit 1
 
 echo "<------- START CHECKING ENVIRONMENT ------->"
 if [ -z "${GITHUB_TOKEN}" ]; then
@@ -113,14 +123,20 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Create tag and push
-git tag "v${VERSION}" main
-git push origin "v${VERSION}"
-
 # Remove deploy folder
 cd ../
 rm -rf "${GITHUB_REPO_NAME}"
 echo "<------- SUCCESS PUSH TO GITHUB ------->"
+
+echo "<------- START UPDATE ARTIFACTORY REPO ------->"
+UPDATE_ARTIFACTORY="scripts/update_artifactory.sh"
+if [ -f "$UPDATE_ARTIFACTORY" ]; then
+    echo "Run a script to update artifactory repo"
+    sh "${UPDATE_ARTIFACTORY}"
+else 
+    echo "Artifacrory repo wasn't updated"
+fi
+echo "<------- SUCCESS UPDATE ARTIFACTORY REPO ------->"
 
 echo "<------- START MAKE A NEW RELEASE ON GITHUB ------->"
 GH_REPO="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO_NAME"
@@ -136,7 +152,7 @@ echo $VERSION
 echo $SDK_NAME
 echo $DESC_NEW_VERSION
 echo $RELEASE_URL
-curl -sH "$AUTH" --data "{\"tag_name\": \"$VERSION\", \"name\": \"${SDK_NAME} ${VERSION}\", \"body\": \"$DESC_NEW_VERSION\"}" $RELEASE_URL
+curl -sH "$AUTH" --data "{\"tag_name\": v\"$VERSION\", \"name\": \"${SDK_NAME} ${VERSION}\", \"body\": \"$DESC_NEW_VERSION\"}" $RELEASE_URL
 echo $?
 
 # Read asset tags.

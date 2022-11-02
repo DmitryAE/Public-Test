@@ -15,16 +15,6 @@ SDK_NAME=$2
 VERSION=$3
 PATH_TO_FILE=$4
 echo "<------- SUCCESS READING PARAMETERS ------->"
-echo "<------- START UPDATE ARTIFACTORY REPO ------->"
-UPDATE_ARTIFACTORY="scripts/update_artifactory.sh"
-if [ -f "$UPDATE_ARTIFACTORY" ]; then
-    echo "Run a script to update artifactory repo"
-    sh "${UPDATE_ARTIFACTORY}"
-else 
-    echo "Artifacrory repo wasn't updated"
-fi
-echo "<------- SUCCESS UPDATE ARTIFACTORY REPO ------->"
-exit 1
 
 echo "<------- START CHECKING ENVIRONMENT ------->"
 if [ -z "${GITHUB_TOKEN}" ]; then

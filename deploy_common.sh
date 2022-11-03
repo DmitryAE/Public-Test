@@ -58,79 +58,79 @@ GITHUB_REPO_URL="https://${GITHUB_TOKEN}@github.com/${GITHUB_ACCOUNT_NAME}/${GIT
 EMAIL_SDK="sdk@kameleoon.com"
 DESC_NEW_VERSION=$(sed -n -e "/## $VERSION/,/##/ p" CHANGELOG.md | sed -e '1d;$d' | sed -r '/^\s*$/d' | sed 's/* /- /g' | awk '{ printf "%s\\n",$0 }' | sed 's/"/\\"/g')
 
-# echo "<------- START CLONE REPO ------->"
-# # Init github repository inside deploy folder
-# rm -rf "${GITHUB_REPO_NAME}"
+echo "<------- START CLONE REPO ------->"
+# Init github repository inside deploy folder
+rm -rf "${GITHUB_REPO_NAME}"
 
-# git clone "${GITHUB_REPO_URL}"
-# if [ $? -ne 0 ]; then
-#     echo "Please check your GITHUB_TOKEN key"
-#     echo "<------- FAILED CLONE REPO ------->"
-#     exit 1
-# fi
+git clone "${GITHUB_REPO_URL}"
+if [ $? -ne 0 ]; then
+    echo "Please check your GITHUB_TOKEN key"
+    echo "<------- FAILED CLONE REPO ------->"
+    exit 1
+fi
 
-# echo "<------- START COMMIT CODE ------->"
-# COMMIT_CODE_SCRIPT="scripts/commit_code.sh"
-# if [ -f "$COMMIT_CODE_SCRIPT" ]; then
-#     mv CHANGELOG.md CHANGELOG-GITHUB.md
-#     echo "Run a script to commit open source code to repo"
-#     sh "${COMMIT_CODE_SCRIPT}" ${GITHUB_REPO_NAME}
-#     mv CHANGELOG-GITHUB.md CHANGELOG.md
-# else 
-#     echo "No open source code was commited"
-# fi
-# echo "<------- SUCCESS COMMIT CODE ------->"
+echo "<------- START COMMIT CODE ------->"
+COMMIT_CODE_SCRIPT="scripts/commit_code.sh"
+if [ -f "$COMMIT_CODE_SCRIPT" ]; then
+    mv CHANGELOG.md CHANGELOG-GITHUB.md
+    echo "Run a script to commit open source code to repo"
+    sh "${COMMIT_CODE_SCRIPT}" ${GITHUB_REPO_NAME}
+    mv CHANGELOG-GITHUB.md CHANGELOG.md
+else 
+    echo "No open source code was commited"
+fi
+echo "<------- SUCCESS COMMIT CODE ------->"
 
-# echo "<------- START UPDATE CHANGELOG ------->"
-# cd ${GITHUB_REPO_NAME}
+echo "<------- START UPDATE CHANGELOG ------->"
+cd ${GITHUB_REPO_NAME}
 
-# #Update changes in CHANGELOG
-# sed -n -e "/## ${VERSION}/,/##/ p" ../CHANGELOG.md | sed -e '$ d' > new-changes.md
-# sed -i '/`internal`/d' new-changes.md
-# sed -i '3 r new-changes.md' CHANGELOG.md
-# CURRENT_DATE=$(date +"%Y-%m-%d")
-# sed -i "s/## ${VERSION}/## ${VERSION} - ${CURRENT_DATE}/" CHANGELOG.md
-# rm new-changes.md
-# echo "<------- SUCCESS UPDATE CHANGELOG ------->"
+#Update changes in CHANGELOG
+sed -n -e "/## ${VERSION}/,/##/ p" ../CHANGELOG.md | sed -e '$ d' > new-changes.md
+sed -i '/`internal`/d' new-changes.md
+sed -i '3 r new-changes.md' CHANGELOG.md
+CURRENT_DATE=$(date +"%Y-%m-%d")
+sed -i "s/## ${VERSION}/## ${VERSION} - ${CURRENT_DATE}/" CHANGELOG.md
+rm new-changes.md
+echo "<------- SUCCESS UPDATE CHANGELOG ------->"
 
-# echo "<------- START DELETE SERVICE FILES ------->"
-# # Delete service files
-# rm CHANGELOG-GITHUB.md
-# rm deploy_common.sh
-# echo "<------- SUCCESS DELETE SERVICE FILES ------->"
+echo "<------- START DELETE SERVICE FILES ------->"
+# Delete service files
+rm CHANGELOG-GITHUB.md
+rm deploy_common.sh
+echo "<------- SUCCESS DELETE SERVICE FILES ------->"
 
-# echo "<------- START PUSH TO GITHUB ------->"
-# # Git config to "${EMAIL_SDK}"
-# CURRENT_EMAIL=$(git config --global user.email)
-# git config --global user.email "${EMAIL_SDK}"
+echo "<------- START PUSH TO GITHUB ------->"
+# Git config to "${EMAIL_SDK}"
+CURRENT_EMAIL=$(git config --global user.email)
+git config --global user.email "${EMAIL_SDK}"
 
-# # Commit and push updated files
-# git add *
-# git commit -m "${SDK_NAME} ${VERSION}"
-# git push --force
-# if [ $? -ne 0 ]; then
-#     echo "<------- FAILED PUSH TO GITHUB ------->"
-#     exit 1
-# fi
+# Commit and push updated files
+git add *
+git commit -m "${SDK_NAME} ${VERSION}"
+git push --force
+if [ $? -ne 0 ]; then
+    echo "<------- FAILED PUSH TO GITHUB ------->"
+    exit 1
+fi
 
-# # Create tag and push
-# git tag "${VERSION}" main
-# git push origin "${VERSION}"
+# Create tag and push
+git tag "${VERSION}" main
+git push origin "${VERSION}"
 
-# # Remove deploy folder
-# cd ../
-# rm -rf "${GITHUB_REPO_NAME}"
-# echo "<------- SUCCESS PUSH TO GITHUB ------->"
+# Remove deploy folder
+cd ../
+rm -rf "${GITHUB_REPO_NAME}"
+echo "<------- SUCCESS PUSH TO GITHUB ------->"
 
-# echo "<------- START UPDATE ARTIFACTORY REPO ------->"
-# UPDATE_ARTIFACTORY="scripts/update_artifactory.sh"
-# if [ -f "$UPDATE_ARTIFACTORY" ]; then
-#     echo "Run a script to update artifactory repo"
-#     sh "${UPDATE_ARTIFACTORY}"
-# else 
-#     echo "Artifacrory repo wasn't updated"
-# fi
-# echo "<------- SUCCESS UPDATE ARTIFACTORY REPO ------->"
+echo "<------- START UPDATE ARTIFACTORY REPO ------->"
+UPDATE_ARTIFACTORY="scripts/update_artifactory.sh"
+if [ -f "$UPDATE_ARTIFACTORY" ]; then
+    echo "Run a script to update artifactory repo"
+    sh "${UPDATE_ARTIFACTORY}"
+else 
+    echo "Artifacrory repo wasn't updated"
+fi
+echo "<------- SUCCESS UPDATE ARTIFACTORY REPO ------->"
 
 echo "<------- START MAKE A NEW RELEASE ON GITHUB ------->"
 GH_REPO="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO_NAME"

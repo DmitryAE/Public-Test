@@ -113,6 +113,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Create tag and push
+git tag "${VERSION}" main
+git push origin "${VERSION}"
+
 # Remove deploy folder
 cd ../
 rm -rf "${GITHUB_REPO_NAME}"
@@ -142,7 +146,7 @@ echo $VERSION
 echo $SDK_NAME
 echo $DESC_NEW_VERSION
 echo $RELEASE_URL
-curl -sH "$AUTH" --data "{\"tag_name\": v\"$VERSION\", \"name\": \"${SDK_NAME} ${VERSION}\", \"body\": \"$DESC_NEW_VERSION\"}" $RELEASE_URL
+curl -sH "$AUTH" --data "{\"tag_name\": \"$VERSION\", \"name\": \"${SDK_NAME} ${VERSION}\", \"body\": \"$DESC_NEW_VERSION\"}" $RELEASE_URL
 echo $?
 
 # Read asset tags.

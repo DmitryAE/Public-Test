@@ -142,10 +142,6 @@ curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or 
 
 # Create a release
 RELEASE_URL="https://api.github.com/repos/$GITHUB_ACCOUNT_NAME/$GITHUB_REPO_NAME/releases"
-echo $VERSION
-echo $SDK_NAME
-echo $DESC_NEW_VERSION
-echo $RELEASE_URL
 curl -sH "$AUTH" --data "{\"tag_name\": \"$VERSION\", \"name\": \"${SDK_NAME} ${VERSION}\", \"body\": \"$DESC_NEW_VERSION\"}" $RELEASE_URL
 echo $?
 

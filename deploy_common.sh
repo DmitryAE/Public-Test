@@ -156,9 +156,10 @@ DESC_NEW_VERSION=$(sed -n -e "/## $VERSION/,/##/ p" CHANGELOG.md | sed -e '1d;$d
 
 echo "<------- START CLONE DOCUMENT REPO ------->"
 echo ${GITLAB_ACCESS_TOKEN}
-echo ${GITLAB_DEVELOPMENT_FOLDER}
 GITLAB_DEVELOPMENT_FOLDER="developers"
 GITLAB_DEVELOPMENT_REPO_URL="http://oauth2:${GITLAB_ACCESS_TOKEN}@development.kameleoon.net/kameleoon-documentation/${GITLAB_DEVELOPMENT_FOLDER}.git"
+echo "DEVELOPMENT FOLER:"
+echo ${GITLAB_DEVELOPMENT_FOLDER}
 
 rm -rf "${GITLAB_DEVELOPMENT_REPO_URL}"
 
